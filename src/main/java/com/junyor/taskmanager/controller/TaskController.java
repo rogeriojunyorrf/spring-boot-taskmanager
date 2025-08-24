@@ -29,5 +29,15 @@ public class TaskController {
     public Task createTask(@RequestBody Task task){
         return taskRepository.save(task);
     }
+    // busca tasks completadas
+    @GetMapping("/completed")
+    public List<Task> listByCompleted(){
+        return taskRepository.findByCompleted(true);
+    }
 
+    //busca tasks em andamento
+    @GetMapping("/pending")
+    public List<Task> listByPending(){
+        return taskRepository.findByCompleted(false);
+    }
 }
