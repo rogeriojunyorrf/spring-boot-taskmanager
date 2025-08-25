@@ -73,7 +73,9 @@ public class TaskController {
                     if (updates.containsKey("completed")){
                         task.setCompleted((Boolean) updates.get("completed")); // atualiza status se estiver no json
                     }
-                    
+                    if (updates.containsKey("description")){
+                        task.setDescription((String) updates.get("description")); // atualiza descrição se estiver no json
+                    }                    
                     taskRepository.save(task);
                     return ResponseEntity.ok(task);
                 }) 
