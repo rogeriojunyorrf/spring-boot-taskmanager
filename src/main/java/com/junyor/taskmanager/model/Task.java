@@ -4,12 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
-
+@Getter // lombok cria todos getters e setters automaticamente
+@Setter
 @Entity // marca a classe como uma entidade (tabela)
 public class Task {
     
@@ -36,37 +38,4 @@ public class Task {
         this.description = description;
     }
 
-    //getters
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public boolean getCompleted() {
-        return completed;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    //setters
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public void setDescription(String description){
-        this.description = description;
-    }
 }
