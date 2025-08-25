@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.junyor.taskmanager.model.Task;
 import com.junyor.taskmanager.repository.TaskRepository;
 
+import jakarta.validation.Valid;
+
 @RestController // a classe responde requisições HTTP e retorna dados
 @RequestMapping("/tasks")
 public class TaskController {
@@ -33,7 +35,7 @@ public class TaskController {
     
     // cria task
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
+    public Task createTask(@Valid @RequestBody Task task) {
         return taskRepository.save(task);
     }
 
@@ -62,7 +64,7 @@ public class TaskController {
 
     // atualiza a task
     @PatchMapping("/{id}")
-    public ResponseEntity<Task> updtateTask(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<Task> updtateTask(@Valid @PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return taskRepository.findById(id)
                 .map(task -> {
                     if (updates.containsKey("title")){
