@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.junyor.taskmanager.dto.TaskRequestDTO;
+import com.junyor.taskmanager.dto.TaskResponseDTO;
 import com.junyor.taskmanager.model.Task;
 import com.junyor.taskmanager.service.TaskService;
 
@@ -28,56 +30,45 @@ public class TaskController {
 
     // lista todas as tasks
     @GetMapping
-    public List<Task> getAllTasks() {
+    public List<TaskResponseDTO> getAllTasks() {
         return taskService.getAllTasks();
     }
     
     // cria task
     @PostMapping
-    public Task createTask(@Valid @RequestBody Task task) {
+    public TaskResponseDTO createTask(@Valid @RequestBody TaskRequestDTO task) {
         return taskService.createTask(task);
     }
 
     // busca tasks completadas
     @GetMapping("/completed")
-    public List<Task> listByCompleted() {
+    public List<TaskResponseDTO> listByCompleted() {
         return taskService.listByCompleted();
     }
 
     // busca tasks em andamento
     @GetMapping("/pending")
-    public List<Task> listByPending() {
+    public List<TaskResponseDTO> listByPending() {
         return taskService.listByPending();
     }
 
     // deleta task pelo id
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable Long id) {
-        return taskService.findById(id)
-                .map(task -> {
-                    taskService.deleteTask(id);
-                    return ResponseEntity.noContent().build();
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        boolean deleted = taskService.deleteTask(id);
+        if(deleted){
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // atualiza a task
     @PatchMapping("/{id}")
     public ResponseEntity<Task> updtateTask(@Valid @PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        return taskService.findById(id)
-                .map(task -> {
-                    if (updates.containsKey("title")){
-                        task.setTitle((String) updates.get("title")); // atualiza titulo se estiver no json
-                    }
-                    if (updates.containsKey("completed")){
-                        task.setCompleted((Boolean) updates.get("completed")); // atualiza status se estiver no json
-                    }
-                    if (updates.containsKey("description")){
-                        task.setDescription((String) updates.get("description")); // atualiza descrição se estiver no json
-                    }                    
-                    taskService.updateTask(task);
-                    return ResponseEntity.ok(task);
-                }) 
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return taskService.updateTask(id, updates)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+
     }
 }
