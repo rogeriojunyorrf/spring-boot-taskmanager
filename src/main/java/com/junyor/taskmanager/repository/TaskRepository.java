@@ -10,4 +10,5 @@ import com.junyor.taskmanager.model.Task;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Page<Task> findByCompleted(boolean completed, Pageable pageable);
+    Page<Task> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description, Pageable pageable);
 }

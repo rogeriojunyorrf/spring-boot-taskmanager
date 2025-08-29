@@ -1,6 +1,5 @@
 package com.junyor.taskmanager.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.junyor.taskmanager.dto.TaskRequestDTO;
@@ -34,6 +34,11 @@ public class TaskController {
     @GetMapping
     public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
         return taskService.getAllTasks(pageable);
+    }
+
+    @GetMapping("/search")
+    public Page<TaskResponseDTO> getAllTasksByTitleOrDescription(@RequestParam String keyword, Pageable pageable) {
+        return taskService.getAllTasksByTitleOrDescription(keyword, pageable);
     }
     
     // cria task

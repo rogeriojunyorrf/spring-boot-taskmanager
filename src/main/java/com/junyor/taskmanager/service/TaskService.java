@@ -1,7 +1,6 @@
 package com.junyor.taskmanager.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,15 +33,24 @@ public class TaskService {
         );
     }
 
+    // busca pelo id
     public Optional<Task> findById(Long id) {
         return taskRepository.findById(id);
     }
 
+    // busca todas as tasks
     public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
         return taskRepository.findAll(pageable)
         .map(this::toResponseDTO);
     }
 
+    // busca todas as tasks (de acordo com o texto fonecido)
+    public Page<TaskResponseDTO> getAllTasksByTitleOrDescription(String keyword, Pageable pageable) {
+        return taskRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(keyword, keyword, pageable)
+        .map(this::toResponseDTO);
+    }
+
+    // cria task
     public TaskResponseDTO createTask(TaskRequestDTO dto) {
         Task task = new Task();
         task.setTitle(dto.getTitle());
@@ -55,16 +63,19 @@ public class TaskService {
                 saved.getCreatedAt());
     }
 
+    // busca tasks completas
     public Page<TaskResponseDTO> listByCompleted(Pageable pageable) {
         return taskRepository.findByCompleted(true, pageable)
         .map(this::toResponseDTO);
     }
 
+    // busca tasks pendentes
     public Page<TaskResponseDTO> listByPending(Pageable pageable) {
         return taskRepository.findByCompleted(false, pageable)
         .map(this::toResponseDTO);
     }
 
+    // atualiza uma task
     public Optional<Task> updateTask(Long id, Map<String, Object> updates) {
         return taskRepository.findById(id)
                 .map(task -> {
@@ -83,6 +94,7 @@ public class TaskService {
             
     }
 
+    // deleta uma task
     public boolean deleteTask(Long id) {
         if (taskRepository.existsById(id)){
             taskRepository.deleteById(id);
