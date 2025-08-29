@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.junyor.taskmanager.dto.TaskRequestDTO;
@@ -23,20 +24,23 @@ public class TaskService {
 
     }
 
+     private TaskResponseDTO toResponseDTO(Task task) {
+        return new TaskResponseDTO(
+            task.getId(),
+            task.getTitle(),
+            task.isCompleted(),
+            task.getDescription(),
+            task.getCreatedAt()
+        );
+    }
+
     public Optional<Task> findById(Long id) {
         return taskRepository.findById(id);
     }
 
-    public List<TaskResponseDTO> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
-        return tasks.stream()
-                .map(task -> new TaskResponseDTO(
-                        task.getId(),
-                        task.getTitle(),
-                        task.isCompleted(),
-                        task.getDescription(),
-                        task.getCreatedAt()))
-                .toList();
+    public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+        .map(this::toResponseDTO);
     }
 
     public TaskResponseDTO createTask(TaskRequestDTO dto) {
@@ -51,28 +55,14 @@ public class TaskService {
                 saved.getCreatedAt());
     }
 
-    public List<TaskResponseDTO> listByCompleted() {
-        List<Task> tasks = taskRepository.findByCompleted(true);
-        return tasks.stream()
-                .map(task -> new TaskResponseDTO(
-                        task.getId(),
-                        task.getTitle(),
-                        task.isCompleted(),
-                        task.getDescription(),
-                        task.getCreatedAt()))
-                .toList();
+    public Page<TaskResponseDTO> listByCompleted(Pageable pageable) {
+        return taskRepository.findByCompleted(true, pageable)
+        .map(this::toResponseDTO);
     }
 
-    public List<TaskResponseDTO> listByPending() {
-        List<Task> tasks = taskRepository.findByCompleted(false);
-        return tasks.stream()
-                .map(task -> new TaskResponseDTO(
-                        task.getId(),
-                        task.getTitle(),
-                        task.isCompleted(),
-                        task.getDescription(),
-                        task.getCreatedAt()))
-                .toList();
+    public Page<TaskResponseDTO> listByPending(Pageable pageable) {
+        return taskRepository.findByCompleted(false, pageable)
+        .map(this::toResponseDTO);
     }
 
     public Optional<Task> updateTask(Long id, Map<String, Object> updates) {

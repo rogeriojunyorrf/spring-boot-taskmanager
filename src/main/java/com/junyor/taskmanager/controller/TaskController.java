@@ -3,6 +3,8 @@ package com.junyor.taskmanager.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +32,8 @@ public class TaskController {
 
     // lista todas as tasks
     @GetMapping
-    public List<TaskResponseDTO> getAllTasks() {
-        return taskService.getAllTasks();
+    public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
+        return taskService.getAllTasks(pageable);
     }
     
     // cria task
@@ -42,14 +44,14 @@ public class TaskController {
 
     // busca tasks completadas
     @GetMapping("/completed")
-    public List<TaskResponseDTO> listByCompleted() {
-        return taskService.listByCompleted();
+    public Page<TaskResponseDTO> listByCompleted(Pageable pageable) {
+        return taskService.listByCompleted(pageable);
     }
 
     // busca tasks em andamento
     @GetMapping("/pending")
-    public List<TaskResponseDTO> listByPending() {
-        return taskService.listByPending();
+    public Page<TaskResponseDTO> listByPending(Pageable pageable) {
+        return taskService.listByPending(pageable);
     }
 
     // deleta task pelo id
