@@ -1,6 +1,7 @@
 package com.junyor.taskmanager.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -8,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -32,6 +34,9 @@ public class Task {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy="task")
+    private List<Subtask> subtasks; 
 
     public Task() {} // construtor vazio (pelo jeito o JPA exige um vazio pra funcionar)
 

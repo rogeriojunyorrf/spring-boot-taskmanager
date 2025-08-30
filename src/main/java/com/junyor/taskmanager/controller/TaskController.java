@@ -59,17 +59,6 @@ public class TaskController {
         return taskService.listByPending(pageable);
     }
 
-    // deleta task pelo id
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable Long id) {
-        boolean deleted = taskService.deleteTask(id);
-        if(deleted){
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     // atualiza a task
     @PatchMapping("/{id}")
     public ResponseEntity<Task> updtateTask(@Valid @PathVariable Long id, @RequestBody Map<String, Object> updates) {
@@ -77,5 +66,16 @@ public class TaskController {
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
 
+    }
+
+    // deleta task pelo id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteTask(@PathVariable Long id) {
+        boolean deleted = taskService.deleteTask(id);
+        if(deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
