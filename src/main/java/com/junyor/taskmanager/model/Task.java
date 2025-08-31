@@ -6,11 +6,14 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -38,6 +41,11 @@ public class Task {
     @OneToMany(mappedBy="task")
     private List<Subtask> subtasks; 
 
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
+    Priority priority;
+
+
     public Task() {} // construtor vazio (pelo jeito o JPA exige um vazio pra funcionar)
 
     public Task(String title, boolean completed, String description) {
@@ -45,5 +53,6 @@ public class Task {
         this.completed = completed;
         this.description = description;
     }
+    
 
 }

@@ -1,5 +1,9 @@
 package com.junyor.taskmanager.dto;
 
+import com.junyor.taskmanager.model.Priority;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,4 +22,8 @@ public class TaskRequestDTO {
     @Size(max=200)
     private String description;
     
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    Priority priority;
+
 }

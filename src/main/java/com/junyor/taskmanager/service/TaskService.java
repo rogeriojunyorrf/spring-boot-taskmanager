@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.junyor.taskmanager.dto.TaskRequestDTO;
 import com.junyor.taskmanager.dto.TaskResponseDTO;
 import com.junyor.taskmanager.model.Task;
+import com.junyor.taskmanager.model.Priority;
 import com.junyor.taskmanager.repository.TaskRepository;
 
 @Service // os métodos serão chamados no TaskController.java
@@ -29,6 +30,7 @@ public class TaskService {
             task.getTitle(),
             task.isCompleted(),
             task.getDescription(),
+            task.getPriority(),
             task.getCreatedAt()
         );
     }
@@ -50,16 +52,29 @@ public class TaskService {
         .map(this::toResponseDTO);
     }
 
+    // busca todas as tasks (de acordo com a prioridade)
+    public Page<TaskResponseDTO> getAllTasksByPriority(Priority priority, Pageable pageable) {
+        return taskRepository.findByPriority(priority, pageable)
+        .map(this::toResponseDTO);
+    }
+
+    // busca todas as tasks (ordenado por prioridade)
+    public Page<TaskResponseDTO> getAllTasksOrderByPriority(Pageable pageable) {
+        return taskRepository.findAllByOrderByPriorityDesc(pageable)
+        .map(this::toResponseDTO);
+    }
+
     // cria task
     public TaskResponseDTO createTask(TaskRequestDTO dto) {
         Task task = new Task();
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
+        task.setPriority(dto.getPriority());
         task.setCreatedAt(LocalDateTime.now());
 
         Task saved = taskRepository.save(task);
 
-        return new TaskResponseDTO(saved.getId(), saved.getTitle(), saved.isCompleted(), saved.getDescription(),
+        return new TaskResponseDTO(saved.getId(), saved.getTitle(), saved.isCompleted(), saved.getDescription(), saved.getPriority(),
                 saved.getCreatedAt());
     }
 

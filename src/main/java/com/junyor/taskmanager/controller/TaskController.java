@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.junyor.taskmanager.dto.TaskRequestDTO;
 import com.junyor.taskmanager.dto.TaskResponseDTO;
 import com.junyor.taskmanager.model.Task;
+import com.junyor.taskmanager.model.Priority;
 import com.junyor.taskmanager.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService taskService; // ./service/TaskService.java
+
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
@@ -40,7 +42,16 @@ public class TaskController {
     public Page<TaskResponseDTO> getAllTasksByTitleOrDescription(@RequestParam String keyword, Pageable pageable) {
         return taskService.getAllTasksByTitleOrDescription(keyword, pageable);
     }
-    
+
+    @GetMapping("/priority")
+    public Page<TaskResponseDTO> getAllTasksByPriority( @RequestParam(required = false) Priority p, Pageable pageable) {
+        if (p != null) {
+            return taskService.getAllTasksByPriority(p, pageable);
+        } else {
+            return taskService.getAllTasksOrderByPriority(pageable);
+        }
+    }
+
     // cria task
     @PostMapping
     public TaskResponseDTO createTask(@Valid @RequestBody TaskRequestDTO task) {
@@ -63,8 +74,8 @@ public class TaskController {
     @PatchMapping("/{id}")
     public ResponseEntity<Task> updtateTask(@Valid @PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return taskService.updateTask(id, updates)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
 
     }
 
@@ -72,7 +83,7 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTask(@PathVariable Long id) {
         boolean deleted = taskService.deleteTask(id);
-        if(deleted) {
+        if (deleted) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
