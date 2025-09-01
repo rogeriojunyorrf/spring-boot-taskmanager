@@ -4,6 +4,7 @@ package com.junyor.taskmanager.service;
 import java.util.Map;
 import java.util.Optional;
 
+import com.junyor.taskmanager.exception.TaskNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,8 @@ public class SubtaskService {
     public SubtaskResponseDTO createSubtask(SubtaskRequestDTO dto) {
 
         Task task = taskRepository.findById(dto.getTask_id())
-        .orElseThrow(() -> new RuntimeException("Task not found"));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found. "));
+
 
 
         Subtask subtask = new Subtask();
@@ -47,7 +49,7 @@ public class SubtaskService {
     // read
     public Page<SubtaskResponseDTO> getAllSubtasks(Long task_id, Pageable pageable) {
         Task task = taskRepository.findById(task_id)
-        .orElseThrow(() -> new RuntimeException("Task not found"));
+        .orElseThrow(() -> new TaskNotFoundException("Task not found"));
         return subtaskRepository.findAllByTask(task, pageable)
         .map(this::toResponseDTO);
         }
